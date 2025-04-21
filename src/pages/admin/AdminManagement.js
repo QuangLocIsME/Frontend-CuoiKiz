@@ -98,19 +98,18 @@ const AdminManagement = () => {
         
         // Cập nhật state với dữ liệu từ API
         setStats({
-          userCount: userStatsResponse.data.userCount || 0,
-          activeUsers: userStatsResponse.data.activeUsers || 0,
-          totalRevenue: userStatsResponse.data.totalRevenue || 0,
-          totalTransactions: userStatsResponse.data.totalTransactions || 0,
-          boxCount: boxStatsResponse.data.boxCount || 0,
-          activeBoxes: boxStatsResponse.data.activeBoxes || 0
+          userCount: userStatsResponse.data.userCount ,
+          activeUsers: userStatsResponse.data.activeUsers ,
+          totalRevenue: userStatsResponse.data.totalRevenue ,
+          totalTransactions: userStatsResponse.data.totalTransactions ,
+          boxCount: boxStatsResponse.data.boxCount ,
+          activeBoxes: boxStatsResponse.data.activeBoxes 
         });
         
       } catch (error) {
         console.error('Lỗi khi lấy thống kê:', error);
         console.error('Chi tiết lỗi:', error.response || 'Không có phản hồi');
         
-        // Hiển thị dữ liệu mẫu khi có lỗi
         setStats({
           userCount: 120,
           activeUsers: 95,
@@ -120,7 +119,6 @@ const AdminManagement = () => {
           activeBoxes: 25
         });
         
-        // Thông báo lỗi cho người dùng (nếu cần)
         toast.error('Không thể lấy dữ liệu thống kê. Đang hiển thị dữ liệu mẫu.');
       } finally {
         setLoading(false);
