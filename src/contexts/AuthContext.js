@@ -12,23 +12,44 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Hàm login
   const login = async (credentials) => {
     setIsLoading(true);
     setError(null);
     try {
+      console.log('Đang gửi request đăng nhập với data:', credentials);
+      
       const response = await axios.post(`${API_URL}/auth/login`, credentials, {
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
+      
+      console.log('Response từ server:', response.data);
       
       if (response.data.token) {
         console.log('Token nhận được từ server:', response.data.token);
         localStorage.setItem('accessToken', response.data.token);
-        fetchUserProfile();
+        
+        // Lưu thông tin user vào localStorage
+        if (response.data.user) {
+          console.log('Lưu thông tin user vào localStorage:', response.data.user);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          // Đặt user vào state
+          setUser(response.data.user);
+          setIsLoading(false);
+          return true;
+        }
+        
+        // Nếu có token nhưng không có user, gọi API lấy thông tin user
+        await fetchUserProfile();
         return true;
       }
       
+      setIsLoading(false);
       return false;
     } catch (err) {
       setError(err.response?.data?.message || 'Đăng nhập thất bại');
@@ -56,41 +77,48 @@ export const AuthProvider = ({ children }) => {
 
   // Lấy thông tin người dùng
   const fetchUserProfile = async () => {
-    setIsLoading(true);
+    console.log('Đang gọi fetchUserProfile...');
+    const token = localStorage.getItem('accessToken');
+    
+    if (!token) {
+      console.log('Không tìm thấy token trong localStorage');
+      setIsAuthenticated(false);
+      setUser(null);
+      setIsLoading(false);
+      return;
+    }
+    
+    console.log('Token từ localStorage:', token);
+    
     try {
-      const token = localStorage.getItem('accessToken');
-      console.log('Attempting to fetch user profile, accessToken exists:', !!token);
-      
-      // Kiểm tra local storage
-      const localUser = localStorage.getItem('user');
-      if (localUser) {
-        console.log('User from localStorage:', JSON.parse(localUser));
-      }
-
-      // Verify token từ API
-      const response = await axios.get(`${API_URL}/auth/verify`, {
+      const response = await axios.get(`${API_URL}/api/auth/verify`, {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${token}`
+          'Authorization': `Bearer ${token}`
         }
       });
-
-      console.log('Verify token response:', response.data);
-
-      if (response.data.success) {
-        console.log('Setting user from API:', response.data.user);
+      
+      console.log('Phản hồi từ verify API:', response.data);
+      
+      if (response.data.user) {
         setUser(response.data.user);
-        
-        // Cập nhật lại user trong localStorage để đảm bảo nhất quán
+        setIsAuthenticated(true);
+        // Cập nhật localStorage với thông tin user mới nhất 
         localStorage.setItem('user', JSON.stringify(response.data.user));
+        console.log('Xác thực thành công, user:', response.data.user);
       } else {
+        console.warn('Không tìm thấy thông tin user trong phản hồi');
+        setIsAuthenticated(false);
         setUser(null);
-        localStorage.removeItem('accessToken');
       }
-    } catch (err) {
+    } catch (error) {
+      console.error('Lỗi khi xác thực token:', error);
+      console.error('Chi tiết lỗi:', error.response || 'Không có phản hồi');
+      setIsAuthenticated(false);
       setUser(null);
+      // Xóa token không hợp lệ
       localStorage.removeItem('accessToken');
-      console.error('Lỗi khi lấy thông tin người dùng:', err);
+      localStorage.removeItem('user');
     } finally {
       setIsLoading(false);
     }

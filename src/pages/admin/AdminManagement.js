@@ -69,78 +69,71 @@ const AdminManagement = () => {
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   
   useEffect(() => {
-    fetchStats();
-  }, []);
-  
-  const fetchStats = async () => {
-    try {
+    const fetchStatistics = async () => {
       setLoading(true);
-      // Lấy token từ localStorage
-      const accessToken = localStorage.getItem('accessToken');
-      console.log('Token trong localStorage:', accessToken);
       
-      // In ra header trước khi gửi request
-      const headers = { Authorization: `Bearer ${accessToken}` };
-      console.log('Request headers:', headers);
-      
-      const usersResponse = await axios.get('https://intuitive-surprise-production.up.railway.app/api/users/stats', {
-        headers,
-        withCredentials: true
-      });
-      
-      // Gọi API để lấy thống kê hộp quà
-      const boxesResponse = await axios.get('https://intuitive-surprise-production.up.railway.app/api/boxes/stats', {
-        headers, 
-        withCredentials: true
-      });
-      
-      console.log('User stats response:', usersResponse.data);
-      console.log('Box stats response:', boxesResponse.data);
-      
-      // Cập nhật state với dữ liệu thống kê thực tế
-      if (usersResponse.data.success && boxesResponse.data.success) {
+      try {
+        const token = localStorage.getItem('accessToken');
+        console.log('Đang lấy thống kê với token:', token);
+        
+        const headers = {
+          'Authorization': `Bearer ${token}`
+        };
+        
+        // Gọi API lấy thống kê người dùng
+        const userStatsResponse = await axios.get(
+          'https://intuitive-surprise-production.up.railway.app/api/users/statistics',
+          { headers }
+        );
+        
+        console.log('Phản hồi API thống kê người dùng:', userStatsResponse.data);
+        
+        // Gọi API lấy thống kê hộp quà
+        const boxStatsResponse = await axios.get(
+          'https://intuitive-surprise-production.up.railway.app/api/boxes/statistics',
+          { headers }
+        );
+        
+        console.log('Phản hồi API thống kê hộp quà:', boxStatsResponse.data);
+        
+        // Cập nhật state với dữ liệu từ API
         setStats({
-          userCount: usersResponse.data.data.userCount || 0,
-          activeUsers: usersResponse.data.data.activeUsers || 0,
-          totalRevenue: 15000000, // Giả lập dữ liệu
-          totalTransactions: 350, // Giả lập dữ liệu
-          boxCount: boxesResponse.data.data.boxCount || 0,
-          activeBoxes: boxesResponse.data.data.activeBoxes || 0
+          userCount: userStatsResponse.data.userCount || 0,
+          activeUsers: userStatsResponse.data.activeUsers || 0,
+          totalRevenue: userStatsResponse.data.totalRevenue || 0,
+          totalTransactions: userStatsResponse.data.totalTransactions || 0,
+          boxCount: boxStatsResponse.data.boxCount || 0,
+          activeBoxes: boxStatsResponse.data.activeBoxes || 0
         });
-      } else {
-        // Thiết lập dữ liệu mẫu nếu API không thành công
+        
+      } catch (error) {
+        console.error('Lỗi khi lấy thống kê:', error);
+        console.error('Chi tiết lỗi:', error.response || 'Không có phản hồi');
+        
+        // Hiển thị dữ liệu mẫu khi có lỗi
         setStats({
-          userCount: 150,
-          activeUsers: 120,
+          userCount: 120,
+          activeUsers: 95,
           totalRevenue: 15000000,
-          totalTransactions: 350,
-          boxCount: 25,
-          activeBoxes: 18
+          totalTransactions: 450,
+          boxCount: 30,
+          activeBoxes: 25
         });
+        
+        // Thông báo lỗi cho người dùng (nếu cần)
+        toast.error('Không thể lấy dữ liệu thống kê. Đang hiển thị dữ liệu mẫu.');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Lỗi khi lấy thống kê:', error);
-      toast({
-        title: "Lỗi khi tải dữ liệu",
-        description: error.response?.data?.message || error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-      
-      // Thiết lập dữ liệu mẫu nếu có lỗi
-      setStats({
-        userCount: 150,
-        activeUsers: 120,
-        totalRevenue: 15000000,
-        totalTransactions: 350,
-        boxCount: 25,
-        activeBoxes: 18
-      });
-    } finally {
+    };
+
+    // Chỉ fetch dữ liệu nếu người dùng là admin
+    if (user && user.role === 'admin') {
+      fetchStatistics();
+    } else {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
 
   // Kiểm tra nếu người dùng không phải admin thì chuyển hướng
   console.log('User trong AdminManagement:', user);

@@ -78,19 +78,34 @@ function LoginPage() {
     setIsLoading(true);
     setError(null);
     
+    console.log('Đang gửi yêu cầu đăng nhập với thông tin:', { login, password: '******' });
+    
     try {
       const response = await axios.post('https://intuitive-surprise-production.up.railway.app/api/auth/login', {
         login,
         password
       }, {
-        withCredentials: true // Quan trọng để nhận cookie từ response
+        withCredentials: true, // Quan trọng để nhận cookie từ response
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
       
-      console.log('Login response:', response.data);
+      console.log('Nhận được phản hồi từ server:', response.data);
+      console.log('Response headers:', response.headers);
+      
+      // Lưu token vào localStorage
+      if (response.data.token) {
+        localStorage.setItem('accessToken', response.data.token);
+        console.log('Token đã được lưu vào localStorage');
+      } else {
+        console.warn('Không tìm thấy token trong phản hồi');
+      }
       
       // Lưu thông tin user vào localStorage
       if (response.data.user) {
         localStorage.setItem('user', JSON.stringify(response.data.user));
+        console.log('Thông tin user đã được lưu vào localStorage:', response.data.user);
         
         // Cập nhật thông tin người dùng trong AuthContext
         await fetchUserProfile();
@@ -113,6 +128,8 @@ function LoginPage() {
       
     } catch (error) {
       console.error('Lỗi đăng nhập:', error);
+      console.error('Thông tin lỗi chi tiết:', error.response || 'Không có phản hồi');
+      
       if (error.response) {
         setError(error.response.data.message || 'Đăng nhập thất bại');
       } else {
