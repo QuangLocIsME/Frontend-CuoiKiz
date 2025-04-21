@@ -20,7 +20,7 @@ const withAuth = (Component) => {
     const verifyAuth = async () => {
       try {
         // Thực hiện request đến endpoint xác thực
-        const response = await axios.get('https://intuitive-surprise-production.up.railway.app/api/auth/verify', {
+        const response = await axios.get('http://localhost:5000/api/auth/verify', {
           withCredentials: true // Quan trọng để gửi cookie
         });
         

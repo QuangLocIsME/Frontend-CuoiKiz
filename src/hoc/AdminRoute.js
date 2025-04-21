@@ -21,11 +21,28 @@ const AdminRoute = ({ children }) => {
 
   // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    console.log('User not found in context, checking localStorage');
+    // Kiểm tra trong localStorage
+    const localUser = JSON.parse(localStorage.getItem('user'));
+    if (!localUser) {
+      console.log('User not found in localStorage, redirecting to login');
+      return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+    
+    console.log('User found in localStorage:', localUser);
+    if (localUser.role !== 'admin') {
+      console.log('User from localStorage is not admin, redirecting to unauthorized');
+      return <Navigate to="/unauthorized" replace />;
+    }
+    
+    console.log('User from localStorage is admin, allowing access');
+    return children;
   }
 
   // Nếu người dùng đã đăng nhập nhưng không phải admin, chuyển hướng đến trang không có quyền
-  if (!isAdmin()) {
+  const admin = isAdmin();
+  console.log('User from context, isAdmin:', admin);
+  if (!admin) {
     return <Navigate to="/unauthorized" replace />;
   }
 

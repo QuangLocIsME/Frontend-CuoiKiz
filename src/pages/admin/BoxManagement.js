@@ -64,7 +64,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
     description: '',
     price: 10000,
     coinPrice: 10,
-    boxType: 'STD',
+    boxType: 'LOVA',
     image: '',
     isActive: true
   });
@@ -81,7 +81,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
         description: boxData.description || '',
         price: boxData.price || 10000,
         coinPrice: boxData.coinPrice || 10,
-        boxType: boxData.boxType || 'STD',
+        boxType: boxData.boxType || 'LOVA',
         image: boxData.image || '',
         isActive: boxData.isActive !== undefined ? boxData.isActive : true
       });
@@ -93,7 +93,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
         description: '',
         price: 10000,
         coinPrice: 10,
-        boxType: 'STD',
+        boxType: 'LOVA',
         image: '',
         isActive: true
       });
@@ -168,17 +168,38 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
 
     setIsSubmitting(true);
     try {
+      let updatedFormData = { ...formData };
+      
       // Upload image nếu có
       if (image) {
-        const formData = new FormData();
-        formData.append('image', image);
-        const uploadResponse = await boxApi.uploadBoxImage(formData);
-        if (uploadResponse.success) {
-          setFormData(prev => ({ ...prev, image: uploadResponse.fileName }));
-        } else {
+        const formDataObj = new FormData();
+        formDataObj.append('image', image);
+        
+        try {
+          const uploadResponse = await boxApi.uploadBoxImage(formDataObj);
+          if (uploadResponse.success) {
+            console.log('Ảnh đã được tải lên:', uploadResponse.data);
+            // Sử dụng đường dẫn tệp từ response của API
+            updatedFormData = { 
+              ...updatedFormData, 
+              image: uploadResponse.data.filePath
+            };
+          } else {
+            toast({
+              title: 'Lỗi',
+              description: 'Không thể tải lên hình ảnh',
+              status: 'error',
+              duration: 3000,
+              isClosable: true,
+            });
+            setIsSubmitting(false);
+            return;
+          }
+        } catch (uploadError) {
+          console.error('Lỗi khi upload ảnh:', uploadError);
           toast({
-            title: 'Lỗi',
-            description: 'Không thể tải lên hình ảnh',
+            title: 'Lỗi tải ảnh',
+            description: uploadError.message || 'Không thể tải lên hình ảnh',
             status: 'error',
             duration: 3000,
             isClosable: true,
@@ -188,8 +209,8 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
         }
       }
 
-      // Lưu thông tin hộp quà
-      await onSave(formData);
+      // Lưu thông tin hộp quà với ảnh đã upload (nếu có)
+      await onSave(updatedFormData);
       onClose();
     } catch (error) {
       toast({
@@ -239,7 +260,10 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
                   <option value="EVNT">Sự kiện đặc biệt (EVNT)</option>
                   <option value="RAND">Ngẫu nhiên (RAND)</option>
                 </Select>
-                <FormHelperText>Loại hộp quà không thể thay đổi sau khi tạo</FormHelperText>
+                <FormHelperText>
+                  Loại hộp quà không thể thay đổi sau khi tạo. 
+                  ID hộp quà sẽ có dạng BOX-{formData.boxType}-XXXXX (5 số)
+                </FormHelperText>
               </FormControl>
             )}
 
@@ -307,7 +331,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
                 <Box mb={2}>
                   <Text fontSize="sm" mb={1}>Hình ảnh hiện tại:</Text>
                   <Image 
-                    src={`http://localhost:5000${formData.image}`} 
+                    src={formData.image.startsWith('http') ? formData.image : `http://localhost:5000${formData.image}`}
                     alt={formData.name}
                     maxH="100px"
                     objectFit="cover"
@@ -632,7 +656,7 @@ const BoxManagement = () => {
                       <MenuList>
                         <MenuItem 
                           icon={<FiEye />} 
-                          onClick={() => window.open(`http://localhost:5000${box.image}`, '_blank')}
+                          onClick={() => window.open(box.image.startsWith('http') ? box.image : `http://localhost:5000${box.image}`, '_blank')}
                         >
                           Xem hình ảnh
                         </MenuItem>

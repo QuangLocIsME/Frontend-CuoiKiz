@@ -58,21 +58,27 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
-      if (!token) {
-        setUser(null);
-        setIsLoading(false);
-        return;
+      console.log('Attempting to fetch user profile, accessToken exists:', !!token);
+      
+      // Kiểm tra local storage
+      const localUser = localStorage.getItem('user');
+      if (localUser) {
+        console.log('User from localStorage:', JSON.parse(localUser));
       }
 
-      const response = await axios.get(`${API_URL}/auth/verify-token`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      // Verify token từ API
+      const response = await axios.get(`${API_URL}/auth/verify`, {
+        withCredentials: true
       });
 
+      console.log('Verify token response:', response.data);
+
       if (response.data.success) {
+        console.log('Setting user from API:', response.data.user);
         setUser(response.data.user);
+        
+        // Cập nhật lại user trong localStorage để đảm bảo nhất quán
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       } else {
         setUser(null);
         localStorage.removeItem('accessToken');
@@ -88,7 +94,18 @@ export const AuthProvider = ({ children }) => {
 
   // Kiểm tra người dùng có phải admin không
   const isAdmin = () => {
-    return user && user.role === 'admin';
+    // Kiểm tra user từ context
+    if (user && user.role === 'admin') {
+      return true;
+    }
+    
+    // Nếu không có user trong context, thử kiểm tra từ localStorage
+    try {
+      const localUser = JSON.parse(localStorage.getItem('user'));
+      return localUser && localUser.role === 'admin';
+    } catch (e) {
+      return false;
+    }
   };
 
   // Kiểm tra token khi component mount

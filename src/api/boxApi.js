@@ -91,7 +91,7 @@ const boxApi = {
   // Tải lên hình ảnh cho hộp quà
   uploadBoxImage: async (formData) => {
     try {
-      const response = await api.post('/upload/box-image', formData, {
+      const response = await api.post('/upload/boxes', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

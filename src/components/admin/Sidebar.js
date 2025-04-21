@@ -91,6 +91,9 @@ const Sidebar = ({ onClose, ...rest }) => {
           <NavItem icon={FiHome} path="/admin">
             Trang chủ quản trị
           </NavItem>
+          <NavItem icon={FiShield} path="/admin/management">
+            Trung tâm quản lý
+          </NavItem>
           <NavItem icon={FiUsers} path="/admin/users">
             Quản lý người dùng
           </NavItem>

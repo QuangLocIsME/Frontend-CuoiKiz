@@ -30,6 +30,7 @@ import { FiEye, FiEyeOff, FiMoon, FiSun } from "react-icons/fi"
 import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import withoutAuth from '../hoc/withoutAuth';
+import { useAuth } from '../contexts/AuthContext';
 
 function LoginPage() {
   const [login, setLogin] = useState('');
@@ -41,6 +42,7 @@ function LoginPage() {
   const [passwordError, setPasswordError] = useState('');
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
+  const { fetchUserProfile } = useAuth();
 
   const bgColor = useColorModeValue("white", "gray.800")
   const textColor = useColorModeValue("gray.800", "white")
@@ -77,22 +79,37 @@ function LoginPage() {
     setError(null);
     
     try {
-      const response = await axios.post('https://intuitive-surprise-production.up.railway.app/api/auth/login', {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
         login,
         password
       }, {
         withCredentials: true // Quan trọng để nhận cookie từ response
       });
       
-      // Lưu thông tin user vào localStorage hoặc state management
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      console.log('Login response:', response.data);
       
-     if (response.data.user && response.data.user.role === 'admin') {
-  console.log('Redirecting to admin dashboard');
-  navigate('/admin');
-} else {
-  navigate('/dashboard');
-}
+      // Lưu thông tin user vào localStorage
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        
+        // Cập nhật thông tin người dùng trong AuthContext
+        await fetchUserProfile();
+        
+        // Kiểm tra chi tiết role của user
+        console.log('User role from response:', response.data.user.role);
+        
+        // Kiểm tra chính xác role của user
+        if (response.data.user && response.data.user.role === 'admin') {
+          console.log('User is admin, redirecting to admin management');
+          navigate('/admin/management');
+        } else {
+          console.log('User is not admin, redirecting to dashboard');
+          navigate('/dashboard');
+        }
+      } else {
+        console.error('User data not found in response');
+        setError('Không thể lấy thông tin người dùng');
+      }
       
     } catch (error) {
       console.error('Lỗi đăng nhập:', error);

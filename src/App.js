@@ -15,6 +15,7 @@ import AdminRoute from './hoc/AdminRoute';
 import AdminDashboard from './pages/admin/Dashboard';
 import UserManagement from './pages/admin/UserManagement';
 import BoxManagement from './pages/admin/BoxManagement';
+import AdminManagement from './pages/admin/AdminManagement';
 
 // Custom LoadingSpinner component
 const LoadingSpinner = () => (
@@ -75,6 +76,12 @@ function App() {
               <Route path="/admin" element={
                 <AdminRoute>
                   <AdminDashboard />
+                </AdminRoute>
+              } />
+              
+              <Route path="/admin/management" element={
+                <AdminRoute>
+                  <AdminManagement />
                 </AdminRoute>
               } />
               

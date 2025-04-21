@@ -53,7 +53,7 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        'https://intuitive-surprise-production.up.railway.app/api/auth/change-password',
+        'http://localhost:5000/api/auth/change-password',
         { oldPassword, newPassword },
         { withCredentials: true }
       );
