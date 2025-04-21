@@ -43,6 +43,11 @@ const boxApi = {
       throw error;
     }
   },
+   // Lấy URL hình ảnh
+   getImageUrl: (imageName) => {
+    return `${API_URL.replace("/api", "")}${imageName}`;
+  },
+
 
   // Tạo hộp quà mới (admin)
   createBox: async (boxData) => {

@@ -299,7 +299,7 @@ const NAV_ITEMS = [
   {
     label: 'Quay Thưởng',
     icon: <FaTrophy style={{ marginRight: '8px' }} />,
-    href: '/lucky-spin',
+    href: '/box',
     children: [
       {
         label: 'Vòng Quay May Mắn',

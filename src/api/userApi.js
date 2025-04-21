@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://intuitive-surprise-production.up.railway.app/api';
 
 // Tạo một instance riêng của axios để xử lý việc thêm token vào header
 const api = axios.create({
