@@ -88,7 +88,9 @@ function LoginPage() {
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
       // Kiểm tra vai trò người dùng và chuyển hướng đến trang phù hợp
-      if (response.data.user.role !== 'user') {
+       if (response.data.user && response.data.user.role === 'admin') {
+        {
+       console.log('Redirecting to admin dashboard');
         navigate('/admin');
       } else {
         navigate('/dashboard');
