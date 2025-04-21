@@ -1,0 +1,673 @@
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import {
+  Box,
+  Flex,
+  Text,
+  Heading,
+  SimpleGrid,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  Icon,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Badge,
+  Button,
+  useColorModeValue,
+  useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Input,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Select,
+  useDisclosure
+} from '@chakra-ui/react';
+import { FaUsers, FaCoins, FaChartBar, FaCog, FaUserShield, FaGift, FaEdit, FaTrash, FaKey, FaMoneyBillWave } from 'react-icons/fa';
+import withAuth from '../hoc/withAuth';
+import axios from 'axios';
+import { LoadingSpinner } from '../App';
+
+// Lazy load BoxManagement component
+const BoxManagement = lazy(() => import('./BoxManagement'));
+
+const AdminDashboard = ({ user }) => {
+  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState({
+    userCount: 0,
+    activeUsers: 0,
+    totalRevenue: 0,
+    totalTransactions: 0
+  });
+  const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    fullname: '',
+    email: '',
+    username: '',
+    phoneNumber: ''
+  });
+  const [newPassword, setNewPassword] = useState('');
+  const [balanceAmount, setBalanceAmount] = useState(0);
+  const [balanceType, setBalanceType] = useState('money');
+  
+  // Modals
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
+  const { isOpen: isPasswordOpen, onOpen: onPasswordOpen, onClose: onPasswordClose } = useDisclosure();
+  const { isOpen: isBalanceOpen, onOpen: onBalanceOpen, onClose: onBalanceClose } = useDisclosure();
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
+  
+  const toast = useToast();
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:5000/api/users', {
+        withCredentials: true
+      });
+      
+      if (response.data.success) {
+        setUsers(response.data.data || []);
+        // Cập nhật thống kê
+        const activeUsers = response.data.data.filter(user => user.isActive).length;
+        setStats({
+          ...stats,
+          userCount: response.data.data.length,
+          activeUsers: activeUsers
+        });
+      }
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách người dùng:', error);
+      toast({
+        title: "Lỗi khi tải dữ liệu",
+        description: error.response?.data?.message || error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditUser = (user) => {
+    setCurrentUser(user);
+    setEditFormData({
+      fullname: user.fullname || '',
+      email: user.email || '',
+      username: user.username || '',
+      phoneNumber: user.phoneNumber || ''
+    });
+    onEditOpen();
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.put(`http://localhost:5000/api/users/${currentUser._id}`, editFormData, {
+        withCredentials: true
+      });
+      
+      if (response.data.success) {
+        toast({
+          title: "Thành công",
+          description: "Thông tin người dùng đã được cập nhật",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        
+        // Cập nhật danh sách người dùng
+        fetchUsers();
+        onEditClose();
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật người dùng:', error);
+      toast({
+        title: "Lỗi",
+        description: error.response?.data?.message || "Không thể cập nhật thông tin người dùng",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = (user) => {
+    setCurrentUser(user);
+    setNewPassword('');
+    onPasswordOpen();
+  };
+
+  const handleSavePassword = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.put(`http://localhost:5000/api/users/${currentUser._id}/reset-password`, {
+        newPassword: newPassword
+      }, {
+        withCredentials: true
+      });
+      
+      if (response.data.success) {
+        toast({
+          title: "Thành công",
+          description: "Mật khẩu đã được đặt lại",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        
+        onPasswordClose();
+      }
+    } catch (error) {
+      console.error('Lỗi khi đặt lại mật khẩu:', error);
+      toast({
+        title: "Lỗi",
+        description: error.response?.data?.message || "Không thể đặt lại mật khẩu",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddBalance = (user) => {
+    setCurrentUser(user);
+    setBalanceAmount(0);
+    setBalanceType('money');
+    onBalanceOpen();
+  };
+
+  const handleSaveBalance = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post(`http://localhost:5000/api/users/${currentUser._id}/add-balance`, {
+        amount: balanceAmount,
+        type: balanceType
+      }, {
+        withCredentials: true
+      });
+      
+      if (response.data.success) {
+        toast({
+          title: "Thành công",
+          description: `Đã nạp ${balanceType === 'money' ? `${balanceAmount.toLocaleString()} VNĐ` : `${balanceAmount} xu`} vào tài khoản`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        
+        // Cập nhật danh sách người dùng
+        fetchUsers();
+        onBalanceClose();
+      }
+    } catch (error) {
+      console.error('Lỗi khi nạp tiền/xu:', error);
+      toast({
+        title: "Lỗi",
+        description: error.response?.data?.message || "Không thể nạp tiền/xu",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleStatus = async (user) => {
+    try {
+      setLoading(true);
+      const response = await axios.patch(`http://localhost:5000/api/users/${user._id}/toggle-status`, {}, {
+        withCredentials: true
+      });
+      
+      if (response.data.success) {
+        toast({
+          title: "Thành công",
+          description: `Đã ${user.isActive ? 'khóa' : 'kích hoạt'} tài khoản người dùng`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        
+        // Cập nhật danh sách người dùng
+        fetchUsers();
+      }
+    } catch (error) {
+      console.error('Lỗi khi thay đổi trạng thái người dùng:', error);
+      toast({
+        title: "Lỗi",
+        description: error.response?.data?.message || "Không thể thay đổi trạng thái người dùng",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteUser = (user) => {
+    setCurrentUser(user);
+    onDeleteOpen();
+  };
+
+  const confirmDelete = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.delete(`http://localhost:5000/api/users/${currentUser._id}`, {
+        withCredentials: true
+      });
+      
+      if (response.data.success) {
+        toast({
+          title: "Thành công",
+          description: "Người dùng đã được xóa",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        
+        // Cập nhật danh sách người dùng
+        fetchUsers();
+        onDeleteClose();
+      }
+    } catch (error) {
+      console.error('Lỗi khi xóa người dùng:', error);
+      toast({
+        title: "Lỗi",
+        description: error.response?.data?.message || "Không thể xóa người dùng",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Kiểm tra xem người dùng có phải là admin không
+  if (user?.role !== 'admin') {
+    return (
+      <Box p={8} textAlign="center">
+        <Heading size="lg" mb={4}>Quyền truy cập bị từ chối</Heading>
+        <Text>Bạn không có quyền truy cập trang này.</Text>
+      </Box>
+    );
+  }
+
+  return (
+    <Box p={5}>
+      <Flex mb={5} alignItems="center">
+        <Icon as={FaUserShield} mr={2} boxSize={6} />
+        <Heading size="lg">Quản Trị Viên</Heading>
+      </Flex>
+      
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6} mb={8}>
+        {/* Thống kê tổng quan */}
+        <Stat bg={bgColor} p={4} borderRadius="md" borderWidth="1px" borderColor={borderColor} shadow="sm">
+          <Flex alignItems="center">
+            <Icon as={FaUsers} mr={4} boxSize={6} color="blue.500" />
+            <Box>
+              <StatLabel>Tổng Người Dùng</StatLabel>
+              <StatNumber>{stats.userCount}</StatNumber>
+              <StatHelpText>{stats.activeUsers} người dùng đang hoạt động</StatHelpText>
+            </Box>
+          </Flex>
+        </Stat>
+        
+        <Stat bg={bgColor} p={4} borderRadius="md" borderWidth="1px" borderColor={borderColor} shadow="sm">
+          <Flex alignItems="center">
+            <Icon as={FaCoins} mr={4} boxSize={6} color="yellow.500" />
+            <Box>
+              <StatLabel>Tổng Doanh Thu</StatLabel>
+              <StatNumber>{stats.totalRevenue.toLocaleString('vi-VN')} đ</StatNumber>
+              <StatHelpText>Từ {stats.totalTransactions} giao dịch</StatHelpText>
+            </Box>
+          </Flex>
+        </Stat>
+        
+        <Stat bg={bgColor} p={4} borderRadius="md" borderWidth="1px" borderColor={borderColor} shadow="sm">
+          <Flex alignItems="center">
+            <Icon as={FaChartBar} mr={4} boxSize={6} color="green.500" />
+            <Box>
+              <StatLabel>Lượt Chơi Hôm Nay</StatLabel>
+              <StatNumber>84</StatNumber>
+              <StatHelpText>Tăng 12% so với hôm qua</StatHelpText>
+            </Box>
+          </Flex>
+        </Stat>
+        
+        <Stat bg={bgColor} p={4} borderRadius="md" borderWidth="1px" borderColor={borderColor} shadow="sm">
+          <Flex alignItems="center">
+            <Icon as={FaGift} mr={4} boxSize={6} color="purple.500" />
+            <Box>
+              <StatLabel>Số Lượng Hộp Quà</StatLabel>
+              <StatNumber>15</StatNumber>
+              <StatHelpText>3 hộp quà mới trong tuần này</StatHelpText>
+            </Box>
+          </Flex>
+        </Stat>
+      </SimpleGrid>
+      
+      {/* Tabs cho các chức năng khác nhau */}
+      <Box bg={bgColor} p={5} borderRadius="md" borderWidth="1px" borderColor={borderColor} shadow="md">
+        <Tabs isFitted variant="enclosed">
+          <TabList mb="1em">
+            <Tab>Quản Lý Người Dùng</Tab>
+            <Tab>Quản Lý Hộp Quà</Tab>
+            <Tab>Quản Lý Giao Dịch</Tab>
+            <Tab>Thống Kê</Tab>
+            <Tab>Cài Đặt Hệ Thống</Tab>
+          </TabList>
+          
+          <TabPanels>
+            {/* Tab quản lý người dùng */}
+            <TabPanel>
+              <Flex justifyContent="space-between" mb={4}>
+                <Heading size="md">Danh Sách Người Dùng</Heading>
+                <Button colorScheme="blue" size="sm" onClick={fetchUsers} isLoading={loading}>
+                  Làm Mới
+                </Button>
+              </Flex>
+              
+              <Box overflowX="auto">
+                <Table variant="simple">
+                  <Thead>
+                    <Tr>
+                      <Th>ID</Th>
+                      <Th>Tên Đăng Nhập</Th>
+                      <Th>Họ Tên</Th>
+                      <Th>Email</Th>
+                      <Th>Quyền</Th>
+                      <Th>Số Dư</Th>
+                      <Th>Xu</Th>
+                      <Th>Trạng Thái</Th>
+                      <Th>Thao Tác</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {users.map(user => (
+                      <Tr key={user._id}>
+                        <Td>{user._id.substring(0, 8)}...</Td>
+                        <Td>{user.username}</Td>
+                        <Td>{user.fullname}</Td>
+                        <Td>{user.email}</Td>
+                        <Td>
+                          <Badge colorScheme={user.role === 'admin' ? 'red' : 'green'}>
+                            {user.role === 'admin' ? 'Admin' : 'Người dùng'}
+                          </Badge>
+                        </Td>
+                        <Td>{user.balance?.toLocaleString('vi-VN') || 0} đ</Td>
+                        <Td>{user.coins || 0}</Td>
+                        <Td>
+                          <Badge colorScheme={user.isActive ? 'green' : 'red'}>
+                            {user.isActive ? 'Hoạt động' : 'Đã khóa'}
+                          </Badge>
+                        </Td>
+                        <Td>
+                          <Flex gap={2}>
+                            <Button 
+                              size="xs" 
+                              colorScheme="blue"
+                              leftIcon={<FaEdit />}
+                              onClick={() => handleEditUser(user)}
+                            >
+                              Sửa
+                            </Button>
+                            
+                            <Button 
+                              size="xs" 
+                              colorScheme="yellow"
+                              leftIcon={<FaKey />}
+                              onClick={() => handleResetPassword(user)}
+                            >
+                              MK
+                            </Button>
+                            
+                            <Button 
+                              size="xs" 
+                              colorScheme="purple"
+                              leftIcon={<FaMoneyBillWave />}
+                              onClick={() => handleAddBalance(user)}
+                            >
+                              Nạp
+                            </Button>
+                            
+                            <Button 
+                              size="xs" 
+                              colorScheme={user.isActive ? 'red' : 'green'}
+                              onClick={() => handleToggleStatus(user)}
+                            >
+                              {user.isActive ? 'Khóa' : 'Mở'}
+                            </Button>
+                            
+                            {user.role !== 'admin' && (
+                              <Button 
+                                size="xs" 
+                                colorScheme="red"
+                                leftIcon={<FaTrash />}
+                                onClick={() => handleDeleteUser(user)}
+                              >
+                                Xóa
+                              </Button>
+                            )}
+                          </Flex>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </Box>
+            </TabPanel>
+            
+            {/* Tab quản lý Hộp Quà */}
+            <TabPanel>
+              <Suspense fallback={<LoadingSpinner />}>
+                <BoxManagement />
+              </Suspense>
+            </TabPanel>
+            
+            {/* Tab quản lý giao dịch */}
+            <TabPanel>
+              <Heading size="md" mb={4}>Quản Lý Giao Dịch</Heading>
+              <Text>Chức năng đang được phát triển...</Text>
+            </TabPanel>
+            
+            {/* Tab thống kê */}
+            <TabPanel>
+              <Heading size="md" mb={4}>Thống Kê</Heading>
+              <Text>Chức năng đang được phát triển...</Text>
+            </TabPanel>
+            
+            {/* Tab cài đặt hệ thống */}
+            <TabPanel>
+              <Heading size="md" mb={4}>Cài Đặt Hệ Thống</Heading>
+              <Text>Chức năng đang được phát triển...</Text>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </Box>
+      
+      {/* Modal Chỉnh sửa thông tin người dùng */}
+      <Modal isOpen={isEditOpen} onClose={onEditClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Chỉnh sửa thông tin người dùng</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl mb={3}>
+              <FormLabel>Tên đăng nhập</FormLabel>
+              <Input 
+                name="username" 
+                value={editFormData.username} 
+                onChange={handleInputChange} 
+              />
+            </FormControl>
+            
+            <FormControl mb={3}>
+              <FormLabel>Họ tên</FormLabel>
+              <Input 
+                name="fullname" 
+                value={editFormData.fullname} 
+                onChange={handleInputChange} 
+              />
+            </FormControl>
+            
+            <FormControl mb={3}>
+              <FormLabel>Email</FormLabel>
+              <Input 
+                name="email" 
+                value={editFormData.email} 
+                onChange={handleInputChange} 
+              />
+            </FormControl>
+            
+            <FormControl>
+              <FormLabel>Số điện thoại</FormLabel>
+              <Input 
+                name="phoneNumber" 
+                value={editFormData.phoneNumber} 
+                onChange={handleInputChange} 
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleSaveEdit} isLoading={loading}>
+              Lưu thay đổi
+            </Button>
+            <Button onClick={onEditClose}>Hủy</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      
+      {/* Modal Đặt lại mật khẩu */}
+      <Modal isOpen={isPasswordOpen} onClose={onPasswordClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Đặt lại mật khẩu</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl>
+              <FormLabel>Mật khẩu mới</FormLabel>
+              <Input 
+                type="password" 
+                value={newPassword} 
+                onChange={(e) => setNewPassword(e.target.value)} 
+                placeholder="Nhập mật khẩu mới" 
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleSavePassword} isLoading={loading}>
+              Đặt lại mật khẩu
+            </Button>
+            <Button onClick={onPasswordClose}>Hủy</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      
+      {/* Modal Nạp tiền/xu */}
+      <Modal isOpen={isBalanceOpen} onClose={onBalanceClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Nạp tiền/xu cho người dùng</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <FormControl mb={3}>
+              <FormLabel>Loại nạp</FormLabel>
+              <Select 
+                value={balanceType} 
+                onChange={(e) => setBalanceType(e.target.value)}
+              >
+                <option value="money">Tiền (VNĐ)</option>
+                <option value="coins">Xu</option>
+              </Select>
+            </FormControl>
+            
+            <FormControl>
+              <FormLabel>Số lượng</FormLabel>
+              <NumberInput min={0} value={balanceAmount} onChange={(value) => setBalanceAmount(Number(value))}>
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleSaveBalance} isLoading={loading}>
+              Nạp
+            </Button>
+            <Button onClick={onBalanceClose}>Hủy</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      
+      {/* Modal Xóa người dùng */}
+      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Xác nhận xóa người dùng</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <Text>Bạn có chắc chắn muốn xóa người dùng {currentUser?.username}?</Text>
+            <Text mt={2} color="red.500">Lưu ý: Hành động này không thể hoàn tác.</Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="red" mr={3} onClick={confirmDelete} isLoading={loading}>
+              Xóa
+            </Button>
+            <Button onClick={onDeleteClose}>Hủy</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Box>
+  );
+};
+
+export default withAuth(AdminDashboard); 
