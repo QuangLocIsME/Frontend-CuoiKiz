@@ -17,7 +17,7 @@ import {
   Icon
 } from '@chakra-ui/react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { FiUsers, FiGift, FiHome, FiLogOut, FiShield, FiBox, FiDollarSign, FiPackage, FiSettings, FiChevronDown } from 'react-icons/fi';
+import { FiUsers, FiGift, FiHome, FiLogOut, FiShield, FiBox, FiDollarSign, FiPackage, FiSettings, FiChevronDown, FiPercent } from 'react-icons/fi';
 
 const AdminLayout = ({ children, title = '', breadcrumbs = [] }) => {
   const location = useLocation();
@@ -128,7 +128,7 @@ const AdminLayout = ({ children, title = '', breadcrumbs = [] }) => {
               <MenuItem icon={<Icon as={FiUsers} />} onClick={() => navigate('/admin/users')}>
                 Người dùng
               </MenuItem>
-              <MenuItem icon={<Icon as={FiUsers} />} onClick={() => navigate('/admin/box-type-chance-management')}>
+              <MenuItem icon={<Icon as={FiPercent} />} onClick={() => navigate('/admin/box-type-chance-management')}>
                 Quản lý tỷ lệ mở Quà
               </MenuItem>
               <MenuItem icon={<Icon as={FiGift} />} onClick={() => navigate('/admin/boxes')}>
@@ -156,8 +156,7 @@ const AdminLayout = ({ children, title = '', breadcrumbs = [] }) => {
 
       {/* Main content - now full width */}
       <Box w="full" p="6">
-        {/* Title and breadcrumb */}
-        <Box mb={6}>
+        {/*         <Box mb={6}>
           <Heading as="h1" size="xl" mb={2}>
             {title || (pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].charAt(0).toUpperCase() + pathSegments[pathSegments.length - 1].slice(1) : 'Dashboard')}
           </Heading>
@@ -178,6 +177,7 @@ const AdminLayout = ({ children, title = '', breadcrumbs = [] }) => {
             ))}
           </Breadcrumb>
         </Box>
+*/}
 
         {/* Page content */}
         <Box>{children}</Box>
@@ -186,4 +186,4 @@ const AdminLayout = ({ children, title = '', breadcrumbs = [] }) => {
   );
 };
 
-export default AdminLayout; 
+export default AdminLayout;

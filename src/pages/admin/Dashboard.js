@@ -26,7 +26,6 @@ import {
   Skeleton
 } from '@chakra-ui/react';
 import { FiUsers, FiBox, FiDollarSign, FiPackage, FiGift } from 'react-icons/fi';
-import AdminLayout from '../../components/admin/AdminLayout';
 import userApi from '../../api/userApi';
 import boxApi from '../../api/boxApi';
 
@@ -129,7 +128,6 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <AdminLayout title="Trang chủ quản trị">
       <Box mb={8}>
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={5} mb={8}>
           <StatCard 
@@ -255,7 +253,6 @@ const AdminDashboard = () => {
           </Card>
         </SimpleGrid>
       </Box>
-    </AdminLayout>
   );
 };
 

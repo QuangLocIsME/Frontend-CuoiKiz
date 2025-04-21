@@ -52,7 +52,6 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { FiSearch, FiMoreVertical, FiEdit, FiTrash2, FiEye, FiPlus, FiAlertTriangle, FiRefreshCw, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
-import AdminLayout from '../../components/admin/AdminLayout';
 import boxApi from '../../api/boxApi';
 
 // Modal thêm/sửa hộp quà
@@ -608,7 +607,7 @@ const BoxManagement = () => {
   };
 
   return (
-    <AdminLayout title="Quản lý hộp quà">
+    <>
       <Box mb={6}>
         <Flex justify="space-between" mb={5}>
           <InputGroup maxW="300px">
@@ -783,8 +782,8 @@ const BoxManagement = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-    </AdminLayout>
+    </>
   );
 };
 
-export default BoxManagement; 
+export default BoxManagement;

@@ -25,6 +25,8 @@ import AdminManagement from './pages/admin/AdminManagement';
 import BoxTypeChanceManagement from './pages/admin/BoxTypeChanceManagement';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 
+
+import AdminLayout from './components/admin/AdminLayout';
 function App() {
   useEffect(() => {
     setupAxiosInterceptors();
@@ -58,13 +60,17 @@ function App() {
                         path="/admin/*"
                         element={
                           <AdminRoute>
+                            <AdminLayout>
                             <Routes>
+                              
                               <Route path="" element={<AdminDashboard />} />
                               <Route path="management" element={<AdminManagement />} />
                               <Route path="users" element={<UserManagement />} />
                               <Route path="boxes" element={<BoxManagement />} />
                               <Route path="box-type-chance-management" element={<BoxTypeChanceManagement />} />
+                              
                             </Routes>
+                            </AdminLayout>
                           </AdminRoute>
                         }
                       />

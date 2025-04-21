@@ -48,7 +48,6 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { FiSearch, FiMoreVertical, FiEdit, FiTrash2, FiUserX, FiPlus, FiAlertTriangle, FiRefreshCw, FiDollarSign } from 'react-icons/fi';
-import AdminLayout from '../../components/admin/AdminLayout';
 import userApi from '../../api/userApi';
 
 // Modal chỉnh sửa người dùng
@@ -439,12 +438,12 @@ const UserManagement = () => {
   };
 
   return (
-    <AdminLayout title="Quản lý người dùng">
+    <>
       <Box mb={6}>
         <Flex justify="space-between" mb={5}>
           <InputGroup maxW="300px">
             <InputLeftElement pointerEvents="none">
-              <FiSearch color="gray.300" />
+              <Icon as={FiSearch} color="gray.300" />
             </InputLeftElement>
             <Input 
               placeholder="Tìm kiếm người dùng..." 
@@ -606,8 +605,8 @@ const UserManagement = () => {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
-    </AdminLayout>
+    </>
   );
 };
 
-export default UserManagement; 
+export default UserManagement;

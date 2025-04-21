@@ -44,7 +44,6 @@ import {
   useDisclosure
 } from '@chakra-ui/react';
 import { FaUsers, FaCoins, FaChartBar, FaCog, FaUserShield, FaGift, FaEdit, FaTrash, FaKey, FaMoneyBillWave, FaLock, FaUnlock } from 'react-icons/fa';
-import AdminLayout from '../../components/admin/AdminLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 
@@ -188,7 +187,6 @@ const AdminManagement = () => {
   }
 
   return (
-    <AdminLayout title="Quản lý hệ thống">
       <Box>
         <Flex mb={5} alignItems="center">
           <Icon as={FaUserShield} mr={2} boxSize={6} />
@@ -253,7 +251,6 @@ const AdminManagement = () => {
           </Suspense>
         </Box>
       </Box>
-    </AdminLayout>
   );
 };
 
