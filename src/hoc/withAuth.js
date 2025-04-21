@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { LoadingSpinner } from '../App';
+import authApi from '../api/authApi'; // Import authApi
 
 /**
  * HOC withAuth - Kiểm tra xác thực người dùng
@@ -19,15 +19,13 @@ const withAuth = (Component) => {
     // Hàm xác thực token
     const verifyAuth = async () => {
       try {
-        // Thực hiện request đến endpoint xác thực
-        const response = await axios.get('https://intuitive-surprise-production.up.railway.app/api/auth/verify', {
-          withCredentials: true // Quan trọng để gửi cookie
-        });
-        
+        // Sử dụng authApi để xác thực token
+        const response = await authApi.verifyToken();
+
         // Nếu thành công, cập nhật trạng thái
-        if (response.data.success) {
+        if (response.success) {
           setIsAuthenticated(true);
-          setUserData(response.data.user);
+          setUserData(response.data); // Lưu thông tin người dùng
         } else {
           // Nếu không được xác thực, chuyển về login
           navigate('/login');
@@ -63,4 +61,4 @@ const withAuth = (Component) => {
   return AuthenticatedComponent;
 };
 
-export default withAuth; 
+export default withAuth;

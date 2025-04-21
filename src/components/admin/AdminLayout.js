@@ -128,6 +128,9 @@ const AdminLayout = ({ children, title = '', breadcrumbs = [] }) => {
               <MenuItem icon={<Icon as={FiUsers} />} onClick={() => navigate('/admin/users')}>
                 Người dùng
               </MenuItem>
+              <MenuItem icon={<Icon as={FiUsers} />} onClick={() => navigate('/admin/box-type-chance-management')}>
+                Quản lý tỷ lệ mở Quà
+              </MenuItem>
               <MenuItem icon={<Icon as={FiGift} />} onClick={() => navigate('/admin/boxes')}>
                 Hộp quà
               </MenuItem>

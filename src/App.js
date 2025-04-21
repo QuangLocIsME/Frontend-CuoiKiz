@@ -22,6 +22,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import UserManagement from './pages/admin/UserManagement';
 import BoxManagement from './pages/admin/BoxManagement';
 import AdminManagement from './pages/admin/AdminManagement';
+import BoxTypeChanceManagement from './pages/admin/BoxTypeChanceManagement';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
                               <Route path="management" element={<AdminManagement />} />
                               <Route path="users" element={<UserManagement />} />
                               <Route path="boxes" element={<BoxManagement />} />
+                              <Route path="box-type-chance-management" element={<BoxTypeChanceManagement />} />
                             </Routes>
                           </AdminRoute>
                         }
