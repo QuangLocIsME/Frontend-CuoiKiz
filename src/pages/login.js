@@ -87,14 +87,12 @@ function LoginPage() {
       // Lưu thông tin user vào localStorage hoặc state management
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
-      // Kiểm tra vai trò người dùng và chuyển hướng đến trang phù hợp
-       if (response.data.user && response.data.user.role === 'admin') {
-        {
-       console.log('Redirecting to admin dashboard');
-        navigate('/admin');
-      } else {
-        navigate('/dashboard');
-      }
+     if (response.data.user && response.data.user.role === 'admin') {
+  console.log('Redirecting to admin dashboard');
+  navigate('/admin');
+} else {
+  navigate('/dashboard');
+}
       
     } catch (error) {
       console.error('Lỗi đăng nhập:', error);
