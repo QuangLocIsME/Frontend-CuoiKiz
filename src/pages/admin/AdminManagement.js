@@ -82,7 +82,7 @@ const AdminManagement = () => {
         
         // Gọi API lấy thống kê người dùng
         const userStatsResponse = await axios.get(
-          'https://intuitive-surprise-production.up.railway.app/api/users/statistics',
+          'https://intuitive-surprise-production.up.railway.app/api/users/stats',
           { headers }
         );
         
@@ -90,7 +90,7 @@ const AdminManagement = () => {
         
         // Gọi API lấy thống kê hộp quà
         const boxStatsResponse = await axios.get(
-          'https://intuitive-surprise-production.up.railway.app/api/boxes/statistics',
+          'https://intuitive-surprise-production.up.railway.app/api/boxes/stats',
           { headers }
         );
         

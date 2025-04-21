@@ -1,7 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Thiết lập API URL cố định - không sử dụng biến môi trường để tránh lỗi
+const API_URL = 'https://intuitive-surprise-production.up.railway.app/api';
 
 // Tạo context
 const AuthContext = createContext(null);
@@ -91,7 +92,7 @@ export const AuthProvider = ({ children }) => {
     console.log('Token từ localStorage:', token);
     
     try {
-      const response = await axios.get(`${API_URL}/api/auth/verify`, {
+      const response = await axios.get(`${API_URL}/auth/verify`, {
         withCredentials: true,
         headers: {
           'Authorization': `Bearer ${token}`
