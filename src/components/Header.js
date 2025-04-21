@@ -32,7 +32,7 @@ import {
   SunIcon,
   SettingsIcon
 } from '@chakra-ui/icons';
-import { FaTrophy, FaUser, FaCog } from 'react-icons/fa';
+import { FaTrophy, FaUser, FaCog, FaBoxOpen, FaMedal } from 'react-icons/fa';
 import {logout} from '../utils/authUtils'; // Import logout function
 import { Navigate } from 'react-router-dom';
 
@@ -275,6 +275,34 @@ const MobileNavItem = ({ label, children, href, icon }) => {
 
 const NAV_ITEMS = [
   {
+    label: 'Quay Thưởng',
+    icon: <FaTrophy style={{ marginRight: '8px' }} />,
+    href: '/box',
+    //children: [
+    //  {
+    //    label: 'Vòng Quay May Mắn',
+    //    subLabel: 'Quay số trúng thưởng ngẫu nhiên',
+    //    href: '/lucky-wheel',
+    //  },
+      //{
+      //  label: 'Xổ Số Hàng Ngày',
+      //  subLabel: 'Tham gia xổ số hàng ngày',
+      //  href: '/daily-lottery',
+      //},
+  //  ],
+  },
+  {
+    label: 'Phần Thưởng Của Tôi ',
+    icon: <FaMedal style={{ marginRight: '8px' }} />, // Icon hòm mở
+    href: '/storage', // Đường dẫn đến trang Kho Thưởng
+  },
+  {
+    label: 'Hỗ Trợ',
+    icon: <SettingsIcon style={{ marginRight: '8px' }} />,
+    href: '/support',
+  },
+  {
+    
     label: 'Tài Khoản',
     icon: <FaUser style={{ marginRight: '8px' }} />,
     href: '/account',
@@ -296,21 +324,5 @@ const NAV_ITEMS = [
     icon: <FaCog style={{ marginRight: '8px' }} />,
     href: '/settings',
   },
-  {
-    label: 'Quay Thưởng',
-    icon: <FaTrophy style={{ marginRight: '8px' }} />,
-    href: '/box',
-    children: [
-      {
-        label: 'Vòng Quay May Mắn',
-        subLabel: 'Quay số trúng thưởng ngẫu nhiên',
-        href: '/lucky-wheel',
-      },
-      {
-        label: 'Xổ Số Hàng Ngày',
-        subLabel: 'Tham gia xổ số hàng ngày',
-        href: '/daily-lottery',
-      },
-    ],
-  },
+  
 ];
