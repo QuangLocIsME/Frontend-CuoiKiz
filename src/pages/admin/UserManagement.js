@@ -45,6 +45,7 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
+  Icon,
 } from '@chakra-ui/react';
 import { FiSearch, FiMoreVertical, FiEdit, FiTrash2, FiUserX, FiPlus, FiAlertTriangle, FiRefreshCw, FiDollarSign } from 'react-icons/fi';
 import AdminLayout from '../../components/admin/AdminLayout';

@@ -25,7 +25,7 @@ import {
   useColorModeValue,
   Skeleton
 } from '@chakra-ui/react';
-import { FiUsers, FiBox, FiDollarSign, FiPackage } from 'react-icons/fi';
+import { FiUsers, FiBox, FiDollarSign, FiPackage, FiGift } from 'react-icons/fi';
 import AdminLayout from '../../components/admin/AdminLayout';
 import userApi from '../../api/userApi';
 import boxApi from '../../api/boxApi';

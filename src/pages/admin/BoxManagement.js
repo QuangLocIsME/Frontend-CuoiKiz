@@ -49,6 +49,7 @@ import {
   Image,
   FormHelperText,
   FormErrorMessage,
+  Icon,
 } from '@chakra-ui/react';
 import { FiSearch, FiMoreVertical, FiEdit, FiTrash2, FiEye, FiPlus, FiAlertTriangle, FiRefreshCw, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
 import AdminLayout from '../../components/admin/AdminLayout';
