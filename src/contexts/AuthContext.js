@@ -68,7 +68,10 @@ export const AuthProvider = ({ children }) => {
 
       // Verify token từ API
       const response = await axios.get(`${API_URL}/auth/verify`, {
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
 
       console.log('Verify token response:', response.data);
