@@ -29,8 +29,7 @@ import { FaFacebook, FaGoogle, FaApple } from "react-icons/fa"
 import { FiEye, FiEyeOff, FiMoon, FiSun } from "react-icons/fi"
 import axios from 'axios';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import withoutAuth from '../hoc/withoutAuth';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 function LoginPage() {
   const [login, setLogin] = useState('');
@@ -254,5 +253,4 @@ function LoginPage() {
   )
 }
 
-// Bọc component với HOC withoutAuth, đảm bảo đã đăng nhập thì không vào được trang login
-export default withoutAuth(LoginPage);
+export default LoginPage;

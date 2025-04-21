@@ -24,8 +24,6 @@ import {
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import axios from "axios";
-import theme from "../theme"
-import withoutAuth from "../hoc/withoutAuth";
 
 function RegisterPage() {
   return <RegisterForm />
@@ -279,5 +277,4 @@ function RegisterForm() {
   )
 }
 
-// Bọc component với HOC withoutAuth để ngăn người dùng đã đăng nhập truy cập trang đăng ký
-export default withoutAuth(RegisterPage);
+export default RegisterPage;

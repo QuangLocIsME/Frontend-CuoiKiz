@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { Box, Heading, Text, VStack, HStack, Badge, useColorModeValue, Button, useDisclosure } from '@chakra-ui/react';
-import withAuth from '../hoc/withAuth';
-import ChangePasswordModal from '../components/ChangePasswordModal';
+import ChangePasswordModal from '../../components/ChangePasswordModal';
 
-const Dashboard = ({ user }) => {
+const Dashboard = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const user= JSON.parse(localStorage.getItem('user')) || null; // Assuming user data is stored in localStorage
   return (
     <Box p={5}>
       <Heading mb={5}>Bảng Điều Khiển</Heading>
@@ -67,5 +66,4 @@ const Dashboard = ({ user }) => {
   );
 };
 
-// Bảo vệ route này bằng HOC withAuth
-export default withAuth(Dashboard); 
+export default Dashboard; 

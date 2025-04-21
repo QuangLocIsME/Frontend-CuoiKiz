@@ -35,9 +35,10 @@ import {
 import { FaTrophy, FaUser, FaCog } from 'react-icons/fa';
 import {logout} from '../utils/authUtils'; // Import logout function
 
-export default function Header({ user }) {
+export default function Header() {
   const { isOpen, onToggle } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
+  const user= JSON.parse(localStorage.getItem('user')) || null; // Assuming user data is stored in localStorage
 
   return (
     <Box>
@@ -73,6 +74,7 @@ export default function Header({ user }) {
             fontWeight="bold"
             fontSize="xl">
             Web3Game
+            onClick={() => window.location.href = '/'} 
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
