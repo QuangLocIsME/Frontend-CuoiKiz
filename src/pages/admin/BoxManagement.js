@@ -64,6 +64,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
     description: '',
     price: 10000,
     coinPrice: 10,
+    discount: 0,
     boxType: 'LOVA',
     image: '',
     isActive: true
@@ -81,6 +82,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
         description: boxData.description || '',
         price: boxData.price || 10000,
         coinPrice: boxData.coinPrice || 10,
+        discount: boxData.discount || 0,
         boxType: boxData.boxType || 'LOVA',
         image: boxData.image || '',
         isActive: boxData.isActive !== undefined ? boxData.isActive : true
@@ -93,6 +95,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
         description: '',
         price: 10000,
         coinPrice: 10,
+        discount: 0,
         boxType: 'LOVA',
         image: '',
         isActive: true
@@ -157,6 +160,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
     if (!formData.description) newErrors.description = 'Mô tả chi tiết không được để trống';
     if (formData.price < 0) newErrors.price = 'Giá tiền không được âm';
     if (formData.coinPrice < 0) newErrors.coinPrice = 'Giá xu không được âm';
+    if (formData.discount < 0 || formData.discount > 100) newErrors.discount = 'Giảm giá phải từ 0 đến 100%';
     if (!isEditing && !image) newErrors.image = 'Vui lòng chọn hình ảnh cho hộp quà';
 
     setErrors(newErrors);
@@ -308,10 +312,10 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
                 {errors.price && <FormErrorMessage>{errors.price}</FormErrorMessage>}
               </FormControl>
 
-              <FormControl isRequired isInvalid={!!errors.coinPrice}>
+              <FormControl isInvalid={errors.coinPrice}>
                 <FormLabel>Giá xu</FormLabel>
                 <NumberInput 
-                  min={0} 
+                  min={0}
                   value={formData.coinPrice} 
                   onChange={(value) => handleNumberChange('coinPrice', value)}
                 >
@@ -322,6 +326,24 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
                   </NumberInputStepper>
                 </NumberInput>
                 {errors.coinPrice && <FormErrorMessage>{errors.coinPrice}</FormErrorMessage>}
+              </FormControl>
+
+              <FormControl isInvalid={errors.discount}>
+                <FormLabel>Giảm giá (%)</FormLabel>
+                <NumberInput 
+                  min={0}
+                  max={100}
+                  value={formData.discount} 
+                  onChange={(value) => handleNumberChange('discount', value)}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                <FormHelperText>Phần trăm giảm giá từ 0-100%</FormHelperText>
+                {errors.discount && <FormErrorMessage>{errors.discount}</FormErrorMessage>}
               </FormControl>
             </HStack>
 
@@ -623,12 +645,12 @@ const BoxManagement = () => {
             <Thead>
               <Tr>
                 <Th>Mã hộp quà</Th>
-                <Th>Tên</Th>
+                <Th>Tên hộp quà</Th>
                 <Th>Loại</Th>
-                <Th>Giá tiền (VNĐ)</Th>
-                <Th>Giá xu</Th>
+                <Th>Giá</Th>
+                <Th>Giảm giá</Th>
                 <Th>Trạng thái</Th>
-                <Th>Thao tác</Th>
+                <Th textAlign="right">Thao tác</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -637,8 +659,29 @@ const BoxManagement = () => {
                   <Td>{box.boxId}</Td>
                   <Td>{box.name}</Td>
                   <Td>{renderBoxTypeBadge(box.boxType)}</Td>
-                  <Td>{box.price?.toLocaleString()} VNĐ</Td>
-                  <Td>{box.coinPrice} xu</Td>
+                  <Td>
+                    {box.discount > 0 ? (
+                      <Flex direction="column">
+                        <Text textDecoration="line-through" color="gray.500">
+                          {box.price?.toLocaleString()} VNĐ
+                        </Text>
+                        <Text fontWeight="bold" color="red.500">
+                          {Math.round(box.price * (1 - box.discount / 100)).toLocaleString()} VNĐ
+                        </Text>
+                      </Flex>
+                    ) : (
+                      `${box.price?.toLocaleString()} VNĐ`
+                    )}
+                  </Td>
+                  <Td>
+                    {box.discount > 0 ? (
+                      <Badge colorScheme="red" variant="solid">
+                        {box.discount}% OFF
+                      </Badge>
+                    ) : (
+                      '-'
+                    )}
+                  </Td>
                   <Td>
                     <Badge colorScheme={box.isActive ? 'green' : 'red'}>
                       {box.isActive ? 'Hoạt động' : 'Ẩn'}
