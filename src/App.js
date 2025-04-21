@@ -8,6 +8,13 @@ import RegisterPage from "./pages/register";
 import Dashboard from "./pages/Dashboard";
 import theme from './theme';
 import { setupAxiosInterceptors } from './utils/authUtils';
+import { AuthProvider } from './contexts/AuthContext';
+import AdminRoute from './hoc/AdminRoute';
+
+// Admin pages
+import AdminDashboard from './pages/admin/Dashboard';
+import UserManagement from './pages/admin/UserManagement';
+import BoxManagement from './pages/admin/BoxManagement';
 
 // Custom LoadingSpinner component
 const LoadingSpinner = () => (
@@ -19,6 +26,14 @@ const LoadingSpinner = () => (
       color="blue.500"
       size="xl"
     />
+  </Center>
+);
+
+// Trang Unauthorized khi không có quyền truy cập
+const UnauthorizedPage = () => (
+  <Center h="100vh" flexDirection="column">
+    <Box fontSize="2xl" fontWeight="bold" mb={4}>403 - Không có quyền truy cập</Box>
+    <Box>Bạn không có quyền truy cập vào trang này.</Box>
   </Center>
 );
 
@@ -37,22 +52,51 @@ function App() {
 
   return (
     <ChakraProvider theme={theme}>
-      <Router>
-        <Box className="app-container">
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/dashboard" element={
-              <>
-                <Header user={dummyUser} />
-                <Dashboard />
-              </>
-            } />
-            <Route path="/" element={<Navigate to="/login" />} />
-            <Route path="*" element={<Navigate to="/login" />} />
-          </Routes>
-        </Box>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Box className="app-container">
+            <Routes>
+              {/* Các trang công khai */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              
+              {/* Trang người dùng đã đăng nhập */}
+              <Route path="/dashboard" element={
+                <>
+                  <Header user={dummyUser} />
+                  <Dashboard />
+                </>
+              } />
+              
+              {/* Trang không có quyền truy cập */}
+              <Route path="/unauthorized" element={<UnauthorizedPage />} />
+              
+              {/* Các trang Admin */}
+              <Route path="/admin" element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              } />
+              
+              <Route path="/admin/users" element={
+                <AdminRoute>
+                  <UserManagement />
+                </AdminRoute>
+              } />
+              
+              <Route path="/admin/boxes" element={
+                <AdminRoute>
+                  <BoxManagement />
+                </AdminRoute>
+              } />
+              
+              {/* Mặc định chuyển hướng */}
+              <Route path="/" element={<Navigate to="/login" />} />
+              <Route path="*" element={<Navigate to="/login" />} />
+            </Routes>
+          </Box>
+        </Router>
+      </AuthProvider>
     </ChakraProvider>
   );
 }
