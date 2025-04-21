@@ -331,7 +331,7 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
                 <Box mb={2}>
                   <Text fontSize="sm" mb={1}>Hình ảnh hiện tại:</Text>
                   <Image 
-                    src={formData.image.startsWith('http') ? formData.image : `http://localhost:5000${formData.image}`}
+                    src={formData.image.startsWith('http') ? formData.image : `https://intuitive-surprise-production.up.railway.app${formData.image}`}
                     alt={formData.name}
                     maxH="100px"
                     objectFit="cover"
@@ -655,8 +655,11 @@ const BoxManagement = () => {
                       />
                       <MenuList>
                         <MenuItem 
-                          icon={<FiEye />} 
-                          onClick={() => window.open(box.image.startsWith('http') ? box.image : `http://localhost:5000${box.image}`, '_blank')}
+                          icon={<FiEye />}
+                          colorScheme="blue"
+                          variant="ghost"
+                          aria-label="Xem"
+                          onClick={() => window.open(box.image.startsWith('http') ? box.image : `https://intuitive-surprise-production.up.railway.app${box.image}`, '_blank')}
                         >
                           Xem hình ảnh
                         </MenuItem>

@@ -75,14 +75,14 @@ const AdminManagement = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      // Lấy thống kê người dùng
-      const usersResponse = await axios.get('http://localhost:5000/api/users/stats', {
-        withCredentials: true
+      // Gọi API để lấy thống kê người dùng
+      const usersResponse = await axios.get('https://intuitive-surprise-production.up.railway.app/api/users/stats', {
+        headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Lấy thống kê hộp quà
-      const boxesResponse = await axios.get('http://localhost:5000/api/boxes/stats', {
-        withCredentials: true
+      // Gọi API để lấy thống kê hộp quà
+      const boxesResponse = await axios.get('https://intuitive-surprise-production.up.railway.app/api/boxes/stats', {
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       console.log('User stats response:', usersResponse.data);
