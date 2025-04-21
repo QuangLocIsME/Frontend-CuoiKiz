@@ -33,6 +33,7 @@ import {
   SettingsIcon
 } from '@chakra-ui/icons';
 import { FaTrophy, FaUser, FaCog } from 'react-icons/fa';
+import {logout} from '../utils/authUtils'; // Import logout function
 
 export default function Header({ user }) {
   const { isOpen, onToggle } = useDisclosure();
@@ -104,7 +105,7 @@ export default function Header({ user }) {
               <MenuItem icon={<FaUser />}>Tài khoản</MenuItem>
               <MenuItem icon={<FaCog />}>Cài đặt</MenuItem>
               <MenuDivider />
-              <MenuItem>Đăng xuất</MenuItem>
+              <MenuItem onClick={logout}>Đăng xuất</MenuItem>
             </MenuList>
           </Menu>
         </Stack>
