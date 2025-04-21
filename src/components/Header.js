@@ -34,6 +34,7 @@ import {
 } from '@chakra-ui/icons';
 import { FaTrophy, FaUser, FaCog } from 'react-icons/fa';
 import {logout} from '../utils/authUtils'; // Import logout function
+import { Navigate } from 'react-router-dom';
 
 export default function Header() {
   const { isOpen, onToggle } = useDisclosure();
@@ -72,9 +73,11 @@ export default function Header() {
             fontFamily={'heading'}
             color={useColorModeValue('gray.800', 'white')}
             fontWeight="bold"
-            fontSize="xl">
+            fontSize="xl"
+            cursor="pointer"
+            onClick={() => (window.location.href = '/home')} // Điều hướng về trang Home
+          >
             Web3Game
-            onClick={() => window.location.href = '/'} 
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -310,4 +313,4 @@ const NAV_ITEMS = [
       },
     ],
   },
-]; 
+];

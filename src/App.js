@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import LoginPage from "./pages/authen/login";
 import RegisterPage from "./pages/authen/register";
 import Dashboard from "./pages/users/Dashboard";
+import HomePage from "./pages/users/HomePage";
+
 import theme from './theme';
 import { setupAxiosInterceptors } from './utils/authUtils';
 import { AuthProvider } from './contexts/AuthContext';
@@ -40,6 +42,7 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Routes>
+                      <Route path="/home" element={<HomePage />} />
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
