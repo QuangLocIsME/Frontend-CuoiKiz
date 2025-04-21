@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { LoadingSpinner } from '../App';
+import { LoadingSpinner } from '../App';  // Ensure that LoadingSpinner is correctly imported or defined
 
 /**
  * HOC withoutAuth - Ngăn truy cập vào trang khi đã xác thực
@@ -28,13 +28,12 @@ const withoutAuth = (Component, redirectPath = '/dashboard') => {
         // Nếu token hợp lệ, đánh dấu là đã xác thực và chuyển hướng
         if (response.data.success) {
           setIsAuthenticated(true);
-          navigate(redirectPath);
+          navigate(redirectPath);  // Redirect nếu đã đăng nhập
         } else {
-          // Nếu không có token hoặc token không hợp lệ, cho phép truy cập trang login
           setIsAuthenticated(false);
         }
       } catch (error) {
-        // Nếu có lỗi, người dùng không được xác thực
+        console.error("Error checking authentication:", error);  // Log lỗi để debug
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
@@ -63,4 +62,4 @@ const withoutAuth = (Component, redirectPath = '/dashboard') => {
   return UnauthenticatedComponent;
 };
 
-export default withoutAuth; 
+export default withoutAuth;
