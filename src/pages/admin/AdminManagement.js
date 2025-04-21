@@ -75,14 +75,16 @@ const AdminManagement = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      // Gọi API để lấy thống kê người dùng
+      // Lấy token từ localStorage
+      const accessToken = localStorage.getItem('accessToken');
+      
       const usersResponse = await axios.get('https://intuitive-surprise-production.up.railway.app/api/users/stats', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${accessToken}` }
       });
       
       // Gọi API để lấy thống kê hộp quà
       const boxesResponse = await axios.get('https://intuitive-surprise-production.up.railway.app/api/boxes/stats', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${accessToken}` }
       });
       
       console.log('User stats response:', usersResponse.data);
