@@ -77,7 +77,7 @@ function LoginPage() {
     setError(null);
     
     try {
-      const response = await axios.post('https://intuitive-surprise-production.up.railway.app/api/auth/login', {
+      const response = await axios.post('/api/auth/login', {
         login,
         password
       }, {
@@ -87,12 +87,12 @@ function LoginPage() {
       // Lưu thông tin user vào localStorage hoặc state management
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
-    if (response.data.user.role === 'admin') {
+      // Kiểm tra vai trò người dùng và chuyển hướng đến trang phù hợp
+      if (response.data.user.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/dashboard');
       }
-      
       
     } catch (error) {
       console.error('Lỗi đăng nhập:', error);
