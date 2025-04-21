@@ -22,7 +22,7 @@ const processQueue = (error, token = null) => {
 export const refreshToken = async () => {
   try {
     const response = await axios.post(
-      'http://localhost:5000/api/auth/refresh',
+      'https://intuitive-surprise-production.up.railway.app//api/auth/refresh',
       {},
       { withCredentials: true }
     );
@@ -103,7 +103,7 @@ export const setupAxiosInterceptors = () => {
 export const logout = async () => {
   try {
     await axios.post(
-      'http://localhost:5000/api/auth/logout', 
+      'https://intuitive-surprise-production.up.railway.app//api/auth/logout', 
       {},
       { withCredentials: true }
     );
