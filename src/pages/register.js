@@ -120,7 +120,7 @@ function RegisterForm() {
 
       try {
         // Gọi API đăng ký từ backend
-        const response = await axios.post("http://localhost:5000/api/auth/register", {
+        const response = await axios.post("https://intuitive-surprise-production.up.railway.app/api/auth/register", {
           fullname: formData.fullname,
           username: formData.username,
           email: formData.email,
