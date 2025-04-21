@@ -2,11 +2,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './App.css';
 import { ChakraProvider, Box } from "@chakra-ui/react";
 import { useEffect } from 'react';
+
 import LoginPage from "./pages/authen/login";
 import RegisterPage from "./pages/authen/register";
+
 import Dashboard from "./pages/users/Dashboard";
 import HomePage from "./pages/users/HomePage";
-
+import Products from "./pages/box/Products";
 import theme from './theme';
 import { setupAxiosInterceptors } from './utils/authUtils';
 import { AuthProvider } from './contexts/AuthContext';
@@ -35,6 +37,7 @@ function App() {
               {/* Các trang công khai */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="box" element={<Products />} />
 
               {/* Các route yêu cầu xác thực */}
               <Route

@@ -118,7 +118,7 @@ function LoginPage() {
           navigate('/admin/management');
         } else {
           console.log('User is not admin, redirecting to dashboard');
-          navigate('/dashboard');
+          navigate('/home');
         }
       } else {
         console.error('User data not found in response');
