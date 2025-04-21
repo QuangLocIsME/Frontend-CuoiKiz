@@ -80,7 +80,7 @@ function LoginPage() {
     
     try {
       const response = await axios.post('https://intuitive-surprise-production.up.railway.app/api/auth/login', {
-        email: login,
+        login,
         password
       }, {
         withCredentials: true // Quan trọng để nhận cookie từ response
