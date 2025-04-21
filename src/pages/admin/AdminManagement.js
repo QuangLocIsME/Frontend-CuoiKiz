@@ -77,14 +77,21 @@ const AdminManagement = () => {
       setLoading(true);
       // Lấy token từ localStorage
       const accessToken = localStorage.getItem('accessToken');
+      console.log('Token trong localStorage:', accessToken);
+      
+      // In ra header trước khi gửi request
+      const headers = { Authorization: `Bearer ${accessToken}` };
+      console.log('Request headers:', headers);
       
       const usersResponse = await axios.get('https://intuitive-surprise-production.up.railway.app/api/users/stats', {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers,
+        withCredentials: true
       });
       
       // Gọi API để lấy thống kê hộp quà
       const boxesResponse = await axios.get('https://intuitive-surprise-production.up.railway.app/api/boxes/stats', {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers, 
+        withCredentials: true
       });
       
       console.log('User stats response:', usersResponse.data);

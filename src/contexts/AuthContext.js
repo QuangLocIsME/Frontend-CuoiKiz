@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
       });
       
       if (response.data.token) {
+        console.log('Token nhận được từ server:', response.data.token);
         localStorage.setItem('accessToken', response.data.token);
         fetchUserProfile();
         return true;
