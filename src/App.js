@@ -10,6 +10,7 @@ import Dashboard from "./pages/users/Dashboard";
 import HomePage from "./pages/users/HomePage";
 import Products from "./pages/box/Products";
 import Detail from "./pages/box/Detail";
+import Storage from './pages/box/Storage';
 
 import theme from './theme';
 import { setupAxiosInterceptors } from './utils/authUtils';
@@ -56,6 +57,7 @@ function App() {
                       <Route path="/unauthorized" element={<UnauthorizedPage />} />
                       <Route path="/box" element={<Products />} />
                       <Route path="/box/:id" element={<Detail />} />
+                      <Route path="/storage" element={<Storage />} />
                       {/* Nhóm các route Admin */}
                       <Route
                         path="/admin/*"
