@@ -131,6 +131,10 @@ const AdminLayout = ({ children, title = '', breadcrumbs = [] }) => {
               <MenuItem icon={<Icon as={FiPercent} />} onClick={() => navigate('/admin/box-type-chance-management')}>
                 Quản lý tỷ lệ mở Quà
               </MenuItem>
+              {/* menu reward*/}
+              <MenuItem icon={<Icon as={FiGift} />} onClick={() => navigate('/admin/reward-management')}>
+                Quản lý phần thưởng
+              </MenuItem>
               <MenuItem icon={<Icon as={FiGift} />} onClick={() => navigate('/admin/boxes')}>
                 Hộp quà
               </MenuItem>
