@@ -169,16 +169,13 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-
     setIsSubmitting(true);
     try {
       let updatedFormData = { ...formData };
-      
       // Upload image nếu có
       if (image) {
         const formDataObj = new FormData();
         formDataObj.append('image', image);
-        
         try {
           const uploadResponse = await boxApi.uploadBoxImage(formDataObj);
           if (uploadResponse.success) {
@@ -212,7 +209,6 @@ const BoxFormModal = ({ isOpen, onClose, boxData, onSave, isEditing = false }) =
           return;
         }
       }
-
       // Lưu thông tin hộp quà với ảnh đã upload (nếu có)
       await onSave(updatedFormData);
       onClose();

@@ -103,7 +103,7 @@ export const setupAxiosInterceptors = () => {
 export const logout = async () => {
   try {
     await axios.post(
-      'https://intuitive-surprise-production.up.railway.app/api/auth/logout', 
+      'http://localhost:5000/api/auth/logout', 
       {},
       { withCredentials: true }
     );

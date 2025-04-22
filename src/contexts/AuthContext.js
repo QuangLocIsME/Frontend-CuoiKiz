@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
 // Thiết lập API URL cố định - không sử dụng biến môi trường để tránh lỗi
-const API_URL = 'https://intuitive-surprise-production.up.railway.app/api';
+const API_URL = 'http://localhost:5000/api';
 
 // Tạo context
 const AuthContext = createContext(null);

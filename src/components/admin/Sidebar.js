@@ -82,7 +82,6 @@ const Sidebar = ({ onClose, ...rest }) => {
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Heading as="h3" size="md" fontWeight="bold">Admin Dashboard</Heading>
       </Flex>
-
       <VStack spacing={1} align="stretch">
         <Box>
           <Text ml="8" my="4" color="gray.500" fontSize="sm">
@@ -96,7 +95,7 @@ const Sidebar = ({ onClose, ...rest }) => {
           </NavItem>
           <NavItem icon={FiUsers} path="/admin/users">
             Quản lý người dùng
-          </NavItem>
+          </NavItem> 
           <NavItem icon={FiGift} path="/admin/boxes">
             Quản lý hộp quà
           </NavItem>
@@ -104,9 +103,7 @@ const Sidebar = ({ onClose, ...rest }) => {
             Quản lý vật phẩm
           </NavItem>
         </Box>
-
         <Divider my={2} />
-
         <Box>
           <Text ml="8" my="4" color="gray.500" fontSize="sm">
             GIAO DỊCH
@@ -118,9 +115,7 @@ const Sidebar = ({ onClose, ...rest }) => {
             Giao dịch nạp tiền
           </NavItem>
         </Box>
-
         <Divider my={2} />
-
         <Box>
           <Text ml="8" my="4" color="gray.500" fontSize="sm">
             HỆ THỐNG
